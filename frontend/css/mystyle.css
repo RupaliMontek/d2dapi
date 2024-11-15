@@ -1,0 +1,52 @@
+/* Option 2: Import via CSS */
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css");
+.frlogo{padding:20px 0;}
+.forMarquee{width: 100%; background: #f2cb3f; height: 40px;}
+.forMarquee marquee{color: #2e2400; line-height: 40px; text-decoration: none; font-weight: 600;font-size: 15px;}
+.forMarquee marquee a{color: #2e2400; line-height: 40px; text-decoration: none; font-weight: 600; font-size: 15px;}
+.forLogoScreen{border:1px solid rgba(0,0,0,.125); border-radius: 15px; padding: 30px 20px; height: 300px; display: flex; justify-content: center;
+align-items: center;}
+.forLoginForm{border:1px solid rgba(0,0,0,.125); border-radius: 15px; padding: 30px 20px;height: 300px; display: flex; align-items: center;}
+.forLoginScreenn{padding: 50px 0;}
+.forLoginScreenn form{width: 100%;}
+.forLoginScreenn input{width: 100%;}
+.forLoginScreenn .btn{background: #363636; border:none; padding:10px 25px; margin: 20px 0;}
+.forfooter{border-top: 1px solid #dee2e6;background: #f2f2f2;}
+footer{padding: 20px 1rem;transition: all 0.25s ease;
+-moz-transition: all 0.25s ease;
+-webkit-transition: all 0.25s ease;
+-ms-transition: all 0.25s ease;
+font-size: calc(0.875rem - 0.05rem);text-decoration: none;
+width: 100%;
+ display: flex; justify-content: space-between;}
+ footer a{color:#d6ad1b;text-decoration: none;}
+  .forUser img{margin-bottom: 10px;}
+ .forUser h2{text-align: left; font-weight: bold; padding: 0 15px 5px 20px;}
+  .forUser ul{list-style: none; padding:0;}
+ .forUser ul li{margin: 0; padding: 0; width: 100%; margin: 0 0 10px 0;}
+.forUser ul li a{text-align: left; font-weight: 600; font-size: 16px; line-height: 40px; text-decoration: none; color: #1d1d1d; width: 100%; display: block; padding: 0 20px; border-radius: 10px;}
+.forUser ul li a:hover{background: #76539b; color: #ffffff !important; text-decoration: none;}
+.forUser ul li a.mainn{color: #76539b; text-transform: uppercase;}
+.dashboardHead{display:flex;justify-content: space-between;}
+.dashboardHead ul{list-style: none;display: flex;justify-content: space-between; padding: 0;}
+.dashboardHead ul li{margin:0 10px;}
+.forDashboardd{padding: 30px 20px 60px 20px; border:1px solid #f2f2f2; margin: 40px 20px; border-radius: 15px; }
+.searchbtnnn{border:none; padding: 0;}
+.dashboardHeadRightOuter{padding:0 0px 0 40px;}
+.dashboardHeadRight input{border:none;border-bottom: 1px solid #ccc;border-radius: 0;}
+.dashboardHeadLeft .btn-primary{background:#76539b; border: none;
+padding: 10px 25px;}
+.dashboardHead ul i{color:#363636; }
+.afterHeadDash{padding: 70px 0;}
+
+.forDaliySale{padding: 15px;background: #fff;border-radius: 15px;  box-shadow: 0px 0px 3px 1px #ccc;}
+.forEmailSubs{padding: 15px;background: #fff;border-radius: 15px;  box-shadow: 0px 0px 3px 1px #ccc;}
+.forDaliySale img, .forEmailSubs img{}
+.forDaliySale .forline{width:80%;height: 3px; background: #793ec3;}
+.forEmailSubs .forline{width:80%;height: 3px; background: #fc304e;}
+.usedspace,.fixedIsuues, .followers{padding: 15px;background: #fff;  box-shadow: 0px 0px 3px 1px #ccc; position:relative;}
+.usedspace p,.fixedIsuues p, .followers p{font-size: 25px; font-weight: bold; padding: 15px 0 10px 0;}
+.usedspace .forDash{width:80%;height: 3px; background: #67b162;}
+.fixedIsuues .forDash{width:80%;height: 3px; background: #cf4c96;}
+.followers .forDash{width:80%;height: 3px; background: #64bef0;}
+.usedspace img,.fixedIsuues img, .followers img{position: absolute; bottom: -20px; right:20px; }
