@@ -309,7 +309,7 @@ $dropTablesCommand = "/usr/pgsql-13/bin/psql -h $localHost -p $localPort -U $loc
 $output1 = shell_exec($dropTablesCommand);
 
 // Check if the drop tables command was successful
-if ($output1 === null) {
+if ($output1 === null || $output1 === '') {
     echo "All tables dropped successfully from the local database.\n";
 } else {
     echo "Error dropping tables in the local database.\n";
