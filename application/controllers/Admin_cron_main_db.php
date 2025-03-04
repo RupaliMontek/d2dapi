@@ -1,7 +1,7 @@
 <?php defined("BASEPATH") or exit("No direct script access allowed");
 //set_time_limit(6000000);
 class Admin_cron_main_db extends CI_Controller
-{
+{//test1
     public function __construct()
     {
         @parent::__construct();
