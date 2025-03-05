@@ -324,14 +324,14 @@ if ($output1 === null || $output1 === '') {
 						        // $importCommand = "/bin/zcat $backupFile | /usr/pgsql-13/bin/psql -h $localHost -p $localPort -U $localUsername -d $localDatabase";
 								 $importCommand = "/bin/zcat $backupFile | /usr/bin/psql -h $localHost -p $localPort -U $localUsername -d $localDatabase";
 						          
-						        // exec($importCommand, $importOutput, $importResultCode);
+						         exec($importCommand, $importOutput, $importResultCode);
 						
 								print_r($importCommand);
 								
 						    // Execute the command to drop all tables in the local database
-						$output2 = shell_exec($importCommand);
+						/*$output2 = shell_exec($importCommand);
 						
-						print_r($output2); 
+						print_r($output2); */
 				}					
 				catch (Exception $e) {
 					    echo "Errorcatch: " . $e->getMessage() . "\n";
