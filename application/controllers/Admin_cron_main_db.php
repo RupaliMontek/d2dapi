@@ -297,6 +297,7 @@ try {
      $localPort = '5432';
      $localUsername = 'symmetryindia';
 	  $localDatabase = 'symmetryindia_postgear_aws_main';
+	  $localPassword ='Y$I3Q#U2[Dw_';
  // Load the 'second' database configuration
        // $this->load->database('second');
         
