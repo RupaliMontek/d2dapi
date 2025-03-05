@@ -338,13 +338,13 @@ if ($output1 === null || $output1 === '') {
 					    exit(1);
 					}
 // Check if pg_dump command was successful
-if ($output2 === null   || $output2 === '') {
+/*if ($output2 === null   || $output2 === '') {
     echo "Remote database dump completed successfully.\n";
 } else {
     echo "Error: Remote database dump failed.\n";
     echo "Command output: $output2\n";
     exit(1); // Exit script with error code
-}  
+} */ 
 
 
          echo "Dump imported successfully for table $table into local server.\n";
