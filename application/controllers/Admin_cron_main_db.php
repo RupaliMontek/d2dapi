@@ -320,16 +320,21 @@ if ($output1 === null || $output1 === '') {
     // Import command (uncomment and modify as needed)
      foreach ($tablesToDump as $table) {
          $backupFile = $table.'_dumps.sql.gz';
+		 try{
         // $importCommand = "/bin/zcat $backupFile | /usr/pgsql-13/bin/psql -h $localHost -p $localPort -U $localUsername -d $localDatabase";
 		 $importCommand = "/bin/zcat $backupFile | /usr/bin/psql -h $localHost -p $localPort -U $localUsername -d $localDatabase";
-
+          
         // exec($importCommand, $importOutput, $importResultCode);
 
 		print_r($importCommand);
+		
     // Execute the command to drop all tables in the local database
 $output2 = shell_exec($importCommand);
 
 print_r($output2); 
+}catch{
+	 echo "Error: " . $e->getMessage() . "\n";
+}
 // Check if pg_dump command was successful
 if ($output2 === null   || $output2 === '') {
     echo "Remote database dump completed successfully.\n";
