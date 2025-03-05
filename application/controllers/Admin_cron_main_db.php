@@ -256,129 +256,102 @@ $this->load->database('second');
   }  
 
 //working fine with postgearSql Aws dump to local postgearsql dump its final
-public function DumpPostgearToMysql_tablewise(){
+public function DumpPostgearToMysql_tablewise() {
+    // Remote PostgreSQL database credentials
+    $remoteHost = 'doc2data-db.cluster-ro-chxypqtoy5ez.ap-south-1.rds.amazonaws.com';
+    $remotePort = '58272';
+    $remoteUsername = 'postgres';
+    $remotePassword = 'heroism_neon_77!';
+    $remoteDatabase = 'doc2db';
 
+    // Tables to dump
+    $tablesToDump = ['lucrative_users','sb_file_status','third_party_details','cb_file_status','rodtep_details','boe_delete_logs', 
+                     'ship_bill_summary','equipment_details','invoice_summary','jobbing_details','item_details','challan_details',
+                     'item_details11','drawback_details','aa_dfia_licence_details','item_manufacturer_details','bill_licence_details',
+                     'bill_payment_details','bill_manifest_details','bill_of_entry_summary','duties_and_additional_details',
+                     'invoice_and_valuation_details','boe_file_status','bill_bond_details','bill_container_details',
+                     'courier_bill_manifest_details','courier_bill_procurment_details','courier_bill_bond_details',
+                     'courier_bill_items_details','courier_bill_payment_details','courier_bill_invoice_details',
+                     'courier_bill_igm_details','courier_bill_notification_used_for_items','courier_bill_container_details',
+                     'courier_bill_duty_details','courier_bill_summary'];
 
-// Remote PostgreSQL database credentials
-$remoteHost = 'doc2data-db.cluster-ro-chxypqtoy5ez.ap-south-1.rds.amazonaws.com';
-$remotePort = '58272';
-$remoteUsername = 'postgres';
-$remotePassword = 'heroism_neon_77!';
-$remoteDatabase = 'doc2db';
+    try {
+        foreach ($tablesToDump as $table) {
+            $backupFile = $table.'_dumps.sql.gz';
 
-// Tables to dump (array of table names)
-//$tablesToDump = ['bill_of_entry_summary']; // Specify the tables you want to dump
-$tablesToDump = ['lucrative_users','sb_file_status','third_party_details','cb_file_status','rodtep_details','boe_delete_logs', 'ship_bill_summary','equipment_details',
-'invoice_summary','jobbing_details','item_details','challan_details','item_details11','drawback_details','aa_dfia_licence_details','item_manufacturer_details','bill_licence_details',
-'bill_payment_details','bill_manifest_details','bill_of_entry_summary','duties_and_additional_details','invoice_and_valuation_details',
-'boe_file_status','bill_bond_details','bill_container_details','courier_bill_manifest_details','courier_bill_procurment_details',
-'courier_bill_bond_details','courier_bill_items_details','courier_bill_payment_details','courier_bill_invoice_details','courier_bill_igm_details',
-'courier_bill_notification_used_for_items','courier_bill_container_details','courier_bill_duty_details','courier_bill_summary'];
-try {
-    // Loop through each table and generate gzipped SQL dump file
-    foreach ($tablesToDump as $table) {
-        $backupFile = $table.'_dumps.sql.gz';
+            // Generate gzipped SQL dump file for the current table
+            $dumpCommand = "export PGPASSWORD='$remotePassword' && /usr/bin/pg_dump -h \"$remoteHost\" -p \"$remotePort\" -U \"$remoteUsername\" -d \"$remoteDatabase\" --table=\"$table\" | gzip > \"$backupFile\"";
+            exec($dumpCommand, $output, $resultCode);
 
-        // Generate gzipped SQL dump file for the current table from remote database
-        $dumpCommand = "/usr/bin/pg_dump -h $remoteHost -p $remotePort -U $remoteUsername -d $remoteDatabase --table $table | gzip > $backupFile";
-        exec($dumpCommand, $output, $resultCode);
+            if ($resultCode !== 0) {
+                throw new Exception("❌ Failed to generate dump for table $table. Command output:\n" . implode("\n", $output));
+            }
 
-        if ($resultCode !== 0) {
-            throw new Exception("Failed to generate dump for table $table. Command output: " . implode("\n", $output));
+            echo "✅ Dump created successfully for table: $table.\n";
         }
 
-        echo "Dump created successfully for table $table.\n";
+        echo "✅ All table dumps created successfully.\n";
+
+        // Local PostgreSQL database credentials
+        $localHost = '35.92.193.2';
+        $localPort = '5432';
+        $localUsername = 'symmetryindia';
+        $localDatabase = 'symmetryindia_postgear_aws_main';
+        $localPassword = 'Y$I3Q#U2[Dw_';
+
+        // Drop all tables before import
+        $dropTablesCommand = "export PGPASSWORD='$localPassword' && /usr/bin/psql -h \"$localHost\" -p \"$localPort\" -U \"$localUsername\" -d \"$localDatabase\" -c \"DROP SCHEMA public CASCADE; CREATE SCHEMA public;\"";
+        exec($dropTablesCommand, $dropOutput, $dropResultCode);
+
+        if ($dropResultCode !== 0) {
+            throw new Exception("❌ Error dropping tables in local database. Command output:\n" . implode("\n", $dropOutput));
+        }
+
+        echo "✅ All tables dropped successfully in the local database.\n";
+
+        // Import each dumped table into the local database
+        foreach ($tablesToDump as $table) {
+            $backupFile = $table.'_dumps.sql.gz';
+
+            try {
+                // Construct import command
+                $importCommand = "export PGPASSWORD='$localPassword' && /bin/zcat \"$backupFile\" | /usr/bin/psql -h \"$localHost\" -p \"$localPort\" -U \"$localUsername\" -d \"$localDatabase\"";
+                exec($importCommand, $importOutput, $importResultCode);
+
+                echo "🛠 Executing import for table: $table\n";
+                echo "Command: $importCommand\n";
+                echo "Output:\n";
+                print_r($importOutput);
+                echo "Result Code: $importResultCode\n";
+
+                if ($importResultCode !== 0) {
+                    throw new Exception("❌ Error: Import failed for table $table!");
+                }
+
+                echo "✅ Dump imported successfully for table: $table.\n";
+            } catch (Exception $e) {
+                echo "❌ Error: " . $e->getMessage() . "\n";
+                exit(1);
+            }
+        }
+
+        echo "✅ All dumps imported successfully into the local server.\n";
+
+        // Clean up dump files (optional)
+        foreach ($tablesToDump as $table) {
+            $backupFile = $table.'_dumps.sql.gz';
+            @unlink($backupFile);
+            echo "🗑 Cleanup completed for dump file: $backupFile.\n";
+        }
+
+        echo "✅ Cleanup completed.\n";
+
+    } catch (Exception $e) {
+        echo "❌ Error: " . $e->getMessage() . "\n";
+        exit(1);
     }
-
-    echo "Table dumps created successfully.\n";
-
-    // Optionally, import the gzipped table dumps into a local database
-    $localHost = '35.92.193.2';
-     $localPort = '5432';
-     $localUsername = 'symmetryindia';
-	  $localDatabase = 'symmetryindia_postgear_aws_main';
-	  $localPassword ='Y$I3Q#U2[Dw_';
- // Load the 'second' database configuration
-       // $this->load->database('second');
-        
-        
-        
-        // Construct the psql command to drop all tables in the local database
-$dropTablesCommand = "/usr/pgsql-13/bin/psql -h $localHost -p $localPort -U $localUsername -d $localDatabase -c \"DROP SCHEMA public CASCADE; CREATE SCHEMA public;\"";
-
-// Execute the command to drop all tables in the local database
-$output1 = shell_exec($dropTablesCommand);
-print_r($output1);
-// Check if the drop tables command was successful
-if ($output1 === null || $output1 === '') {
-    echo "All tables dropped successfully from the local database.\n";
-} else {
-    echo "Error dropping tables in the local database.\n";
-    echo "Command output: $output1\n";
-    exit(1); // Exit script with error code
-}
-        
-    // Import command (uncomment and modify as needed)
-     foreach ($tablesToDump as $table) {
-         $backupFile = $table.'_dumps.sql.gz';
-		 try{
-						        // $importCommand = "/bin/zcat $backupFile | /usr/pgsql-13/bin/psql -h $localHost -p $localPort -U $localUsername -d $localDatabase";
-								/* $importCommand = "/bin/zcat $backupFile | /usr/bin/psql -h $localHost -p $localPort -U $localUsername -d $localDatabase";
-						          
-						         exec($importCommand, $importOutput, $importResultCode);
-						
-								print_r($importCommand);*/
-								
-								
-								$importCommand = "export PGPASSWORD='$localPassword' && /bin/zcat \"$backupFile\" | /usr/bin/psql -h \"$localHost\" -p \"$localPort\" -U \"$localUsername\" -d \"$localDatabase\"";
-								exec($importCommand, $importOutput, $importResultCode);
-
-								echo "Command executed: $importCommand\n";
-								echo "Output:\n";
-								print_r($importOutput);
-								echo "Result Code: $importResultCode\n";
-
-								if ($importResultCode !== 0) {
-								    echo "Error: Import command failed!\n";
-								}
-
-								
-						    // Execute the command to drop all tables in the local database
-						/*$output2 = shell_exec($importCommand);
-						
-						print_r($output2); */
-				}					
-				catch (Exception $e) {
-					    echo "Errorcatch: " . $e->getMessage() . "\n";
-					    exit(1);
-					}
-// Check if pg_dump command was successful
-/*if ($output2 === null   || $output2 === '') {
-    echo "Remote database dump completed successfully.\n";
-} else {
-    echo "Error: Remote database dump failed.\n";
-    echo "Command output: $output2\n";
-    exit(1); // Exit script with error code
-} */ 
-
-
-         echo "Dump imported successfully for table $table into local server.\n";
-     }
-
-    /*// Clean up the gzipped dump files
-    foreach ($tablesToDump as $table) {
-         $backupFile = $table.'_dumps.sql.gz';
-        @unlink($backupFile);
-        echo "Cleanup completed for dump file $backupFile.\n";
-     }
-
-    echo "Cleanup completed.\n";*/
-} catch (Exception $e) {
-    echo "Error: " . $e->getMessage() . "\n";
-    exit(1);
 }
 
-}
 
 //not working function  tried take dump postgear to mysql
 public function exportPostgreSQLToMySQL() {
