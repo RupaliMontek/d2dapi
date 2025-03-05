@@ -293,12 +293,12 @@ try {
     echo "Table dumps created successfully.\n";
 
     // Optionally, import the gzipped table dumps into a local database
-     $localHost = 'localhost';
+    $localHost = '35.92.193.2';
      $localPort = '5432';
      $localUsername = 'symmetryindia';
-    $localDatabase = 'symmetryindia_postgear_aws_main';
+	  $localDatabase = 'symmetryindia_postgear_aws_main';
  // Load the 'second' database configuration
-        $this->load->database('second');
+       // $this->load->database('second');
         
         
         
