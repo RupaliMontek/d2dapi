@@ -280,7 +280,7 @@ try {
         $backupFile = $table.'_dumps.sql.gz';
 
         // Generate gzipped SQL dump file for the current table from remote database
-        $dumpCommand = "/usr/pgsql-13/bin/pg_dump -h $remoteHost -p $remotePort -U $remoteUsername -d $remoteDatabase --table $table | gzip > $backupFile";
+        $dumpCommand = "/usr/bin/pg_dump -h $remoteHost -p $remotePort -U $remoteUsername -d $remoteDatabase --table $table | gzip > $backupFile";
         exec($dumpCommand, $output, $resultCode);
 
         if ($resultCode !== 0) {
