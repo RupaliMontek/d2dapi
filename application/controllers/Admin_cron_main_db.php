@@ -320,7 +320,9 @@ if ($output1 === null || $output1 === '') {
     // Import command (uncomment and modify as needed)
      foreach ($tablesToDump as $table) {
          $backupFile = $table.'_dumps.sql.gz';
-         $importCommand = "/bin/zcat $backupFile | /usr/pgsql-13/bin/psql -h $localHost -p $localPort -U $localUsername -d $localDatabase";
+        // $importCommand = "/bin/zcat $backupFile | /usr/pgsql-13/bin/psql -h $localHost -p $localPort -U $localUsername -d $localDatabase";
+		 $importCommand = "/bin/zcat $backupFile | /usr/bin/psql -h $localHost -p $localPort -U $localUsername -d $localDatabase";
+
         // exec($importCommand, $importOutput, $importResultCode);
 
 		print_r($importCommand);
