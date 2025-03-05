@@ -323,13 +323,13 @@ if ($output1 === null || $output1 === '') {
          $importCommand = "/bin/zcat $backupFile | /usr/pgsql-13/bin/psql -h $localHost -p $localPort -U $localUsername -d $localDatabase";
         // exec($importCommand, $importOutput, $importResultCode);
 
-         
+		print_r($importCommand);
     // Execute the command to drop all tables in the local database
 $output2 = shell_exec($importCommand);
 
 print_r($output2); 
 // Check if pg_dump command was successful
-if ($output2 === null) {
+if ($output2 === null   || $output2 === '') {
     echo "Remote database dump completed successfully.\n";
 } else {
     echo "Error: Remote database dump failed.\n";
