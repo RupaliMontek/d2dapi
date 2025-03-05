@@ -322,11 +322,25 @@ if ($output1 === null || $output1 === '') {
          $backupFile = $table.'_dumps.sql.gz';
 		 try{
 						        // $importCommand = "/bin/zcat $backupFile | /usr/pgsql-13/bin/psql -h $localHost -p $localPort -U $localUsername -d $localDatabase";
-								 $importCommand = "/bin/zcat $backupFile | /usr/bin/psql -h $localHost -p $localPort -U $localUsername -d $localDatabase";
+								/* $importCommand = "/bin/zcat $backupFile | /usr/bin/psql -h $localHost -p $localPort -U $localUsername -d $localDatabase";
 						          
 						         exec($importCommand, $importOutput, $importResultCode);
 						
-								print_r($importCommand);
+								print_r($importCommand);*/
+								
+								
+								$importCommand = "export PGPASSWORD='$localPassword' && /bin/zcat \"$backupFile\" | /usr/bin/psql -h \"$localHost\" -p \"$localPort\" -U \"$localUsername\" -d \"$localDatabase\"";
+								exec($importCommand, $importOutput, $importResultCode);
+
+								echo "Command executed: $importCommand\n";
+								echo "Output:\n";
+								print_r($importOutput);
+								echo "Result Code: $importResultCode\n";
+
+								if ($importResultCode !== 0) {
+								    echo "Error: Import command failed!\n";
+								}
+
 								
 						    // Execute the command to drop all tables in the local database
 						/*$output2 = shell_exec($importCommand);
